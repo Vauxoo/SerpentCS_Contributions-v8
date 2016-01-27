@@ -18,32 +18,11 @@ class WebsiteSale(website_sale):
                 auth='public',
                 website=True)
     def shop(self, page=0, category=None, brand=None, search='', **post):
-        cr, context, pool = (request.cr,
-                             request.context,
-                             request.registry)
         if brand:
             request.context.setdefault('brand_id', int(brand))
         result = super(WebsiteSale, self).shop(page=page, category=category,
                                                brand=brand, search=search,
                                                **post)
-        product_obj = pool.get('product.template')
-        category_obj = pool['product.public.category']
-        public_categs = []
-        published_product_ids = product_obj.search(
-            cr, SUPERUSER_ID, [('website_published', '=', True)])
-        published_products = product_obj.browse(cr, SUPERUSER_ID,
-                                                published_product_ids,
-                                                context=context)
-        for pp in published_products:
-            for pc in pp.public_categ_ids:
-                if pc.id not in public_categs:
-                    public_categs.append(pc.id)
-        categories = category_obj.browse(
-            cr,
-            SUPERUSER_ID,
-            public_categs,
-            context=context)
-        # result.qcontext['categories'] = categories
         result.qcontext['brand'] = brand
         return result
 

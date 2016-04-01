@@ -51,5 +51,3 @@ class WebsiteSale(website_sale):
         return request.website.render(
             'website_product_brand.product_brands',
             values)
-
-openerp.addons.website_sale.controllers.main.website_sale = WebsiteSale
